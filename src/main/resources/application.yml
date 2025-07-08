@@ -1,0 +1,20 @@
+server:
+  port: ${PORT:8010}
+
+spring:
+  application:
+    name: cyctius-server
+    debug: true
+  datasource:
+    platform: postgres
+    url: ${DB_URL:jdbc:postgresql://localhost:5433/cyctius}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:qwerty123}
+    driver-class-name: org.postgresql.Driver
+  liquibase:
+    enabled: ${ENABLE_LIQUIBASE:false}
+    change-log: classpath:/db/changelog/master-changelog.xml
+    liquibase-schema: public
+    default-schema: ihs_db_schema
+    contexts: PROD, DATASAMPLE
+    rollback-file: rollback.sql
