@@ -1,20 +1,39 @@
 server:
   port: ${PORT:8010}
 
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.tool.hbm2ddl: TRACE
+
 spring:
   application:
     name: cyctius-server
-    debug: true
   datasource:
-    platform: postgres
-    url: ${DB_URL:jdbc:postgresql://localhost:5433/cyctius}
-    username: ${DB_USERNAME:postgres}
-    password: ${DB_PASSWORD:qwerty123}
+    url: jdbc:postgresql://${DB_HOST:2.56.122.130}:${DB_PORT:5432}/${DB_NAME:cyctius_workouts}
+    password: ${DB_PASSWORD:s9XqLw83vZpE}
+    username: ${DB_USERNAME:cyctius}
     driver-class-name: org.postgresql.Driver
+  sql:
+    init:
+      platform: postgres
+      password: ${DB_PASSWORD:s9XqLw83vZpE}
+      username: ${DB_USERNAME:cyctius}
   liquibase:
     enabled: ${ENABLE_LIQUIBASE:false}
     change-log: classpath:/db/changelog/master-changelog.xml
     liquibase-schema: public
-    default-schema: ihs_db_schema
-    contexts: PROD, DATASAMPLE
+    default-schema: cyctius_db_schema
+    contexts: PROD
     rollback-file: rollback.sql
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+      jdbc:
+        time_zone: UTC
+  jackson:
+    time-zone: UTC
+
