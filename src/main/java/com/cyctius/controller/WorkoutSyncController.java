@@ -21,19 +21,19 @@ public class WorkoutSyncController {
     private final WorkoutService workoutService;
 
     @PostMapping("/workouts")
-    ResponseEntity<List<WorkoutDTO>> syncWorkouts(@RequestBody @Valid SyncLocalWorkoutsRequestDTO request) {
+    ResponseEntity<List<WorkoutDTO>> syncWorkouts(@RequestBody @Valid final SyncLocalWorkoutsRequestDTO request) {
         List<WorkoutDTO> syncedWorkouts = workoutSyncService.syncWorkouts(request);
         return ResponseEntity.ok(syncedWorkouts);
     }
 
     @PostMapping("/workout")
-    ResponseEntity<WorkoutDTO> syncWorkout(@RequestBody @Valid WorkoutDTO workoutDTO) {
+    ResponseEntity<WorkoutDTO> syncWorkout(@RequestBody @Valid final WorkoutDTO workoutDTO) {
         WorkoutDTO syncedWorkout = workoutSyncService.syncWorkout(workoutDTO);
         return ResponseEntity.ok(syncedWorkout);
     }
 
     @DeleteMapping("/workout/delete/{id}")
-    ResponseEntity<Void> deleteWorkout(@PathVariable("id") @NotNull String id) {
+    ResponseEntity<Void> deleteWorkout(@PathVariable("id") @NotNull final String id) {
         workoutService.softDeleteWorkout(id);
         return ResponseEntity.noContent().build();
     }

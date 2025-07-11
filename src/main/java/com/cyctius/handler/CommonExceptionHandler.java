@@ -3,6 +3,7 @@ package com.cyctius.handler;
 import com.cyctius.dto.ErrorResponse;
 import com.cyctius.handler.exception.AlreadyExistException;
 import com.cyctius.handler.exception.BadRequestException;
+import com.cyctius.handler.exception.ExpiredException;
 import com.cyctius.handler.exception.NotFoundException;
 import com.cyctius.util.MessageService;
 import lombok.RequiredArgsConstructor;
@@ -55,5 +56,16 @@ public final class CommonExceptionHandler extends ResponseEntityExceptionHandler
 
         log.error(errorResponse.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> expiredExceptionHandler(
+        final ExpiredException ex
+    ) {
+        val errorResponse = new ErrorResponse();
+        errorResponse.setMessage(messageService.getMessage(ex.getMessage()));
+
+        log.error(errorResponse.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.GONE);
     }
 }
