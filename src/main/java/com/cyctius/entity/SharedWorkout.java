@@ -26,7 +26,11 @@ public class SharedWorkout extends Auditable {
     @UuidGenerator
     @Column(name = "id", updatable = false, nullable = false)
     private String id;
+
+    @Column(name = "workout_id", nullable = false)
     private String workoutId;
+
+    @Column(name = "life_times", nullable = false)
     private Integer lifeTimeS;
 
     public boolean isExpired() {

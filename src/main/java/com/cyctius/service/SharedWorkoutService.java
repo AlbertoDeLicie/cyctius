@@ -19,4 +19,9 @@ public interface SharedWorkoutService {
      * @return the shared workout details
      */
     SharedWorkoutDTO getSharedWorkout(String sharedId);
+
+    /**
+     * Clean up expired shared workouts.
+     */
+    void cleanExpiredSharedWorkouts();
 }

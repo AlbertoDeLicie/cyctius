@@ -1,7 +1,6 @@
 package com.cyctius.service.impl;
 
 import com.cyctius.dto.SharedWorkoutDTO;
-import com.cyctius.dto.WorkoutDTO;
 import com.cyctius.entity.SharedWorkout;
 import com.cyctius.handler.exception.BadRequestException;
 import com.cyctius.handler.exception.ExpiredException;
@@ -10,12 +9,14 @@ import com.cyctius.repository.SharedWorkoutRepository;
 import com.cyctius.repository.WorkoutRepository;
 import com.cyctius.service.SharedWorkoutService;
 import com.cyctius.service.SharedWorkoutTransformer;
-import com.cyctius.service.WorkoutTransformer;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Objects;
 
 @Service
@@ -61,5 +62,12 @@ public class SharedWorkoutServiceImpl implements SharedWorkoutService {
                 workoutRepository.findById(sharedWorkout.getWorkoutId())
                         .orElseThrow(() -> new NotFoundException("workout.error.workout-not-found"))
         );
+    }
+
+    @Override
+    @Transactional
+    public void cleanExpiredSharedWorkouts() {
+        val now = LocalDateTime.now(ZoneOffset.UTC).minusMinutes(5);
+        sharedWorkoutRepository.deleteByCreatedAtBefore(now);
     }
 }

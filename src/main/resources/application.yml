@@ -28,7 +28,7 @@ spring:
     rollback-file: rollback.sql
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
