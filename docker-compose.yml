@@ -1,0 +1,112 @@
+services:
+  postgres:
+    image: 'postgres:15'
+    container_name: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: cyctius
+      POSTGRES_PASSWORD: s9XqLw83vZpE
+      POSTGRES_DB: appdb
+    volumes:
+      - 'postgres_data:/var/lib/postgresql/data'
+    networks:
+      - backend
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    restart: unless-stopped
+    ports:
+      - '5050:80'
+    environment:
+      PGADMIN_DEFAULT_EMAIL: goblische1@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: Martensit3228
+    depends_on:
+      - postgres
+    networks:
+      - backend
+
+  cyctius-server:
+    image: 'ghcr.io/albertodelicie/cyctius-server:latest'
+    container_name: cyctius-server
+    expose:
+      - '8010'
+    environment:
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: 'https://cyctius.mooo.com/realms/Cyctius'
+      SPRING_DATASOURCE_URL: 'jdbc:postgresql://postgres:5432/cyctius_workouts'
+      SPRING_DATASOURCE_USERNAME: cyctius
+      SPRING_DATASOURCE_PASSWORD: s9XqLw83vZpE
+      SPRING_SQL_INIT_PLATFORM: postgres
+      SPRING_SQL_INIT_USERNAME: cyctius
+      SPRING_SQL_INIT_PASSWORD: s9XqLw83vZpE
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_JPA_PROPERTIES_JDBC_TIME_ZONE: UTC
+      SPRING_JACKSON_TIME_ZONE: UTC
+      SERVER_PORT: 8010
+      KEYCLOAK_ENABLED: true
+      KEYCLOAK_AUTH_SERVER_URL: 'https://cyctius.mooo.com'
+      KEYCLOAK_REALM: Cyctius
+      KEYCLOAK_RESOURCE: cyctius-server-admin
+      KEYCLOAK_CREDENTIALS_SECRET: o9PXHT2Ub4tRsKw2HGHWO1BnadTrHV7m
+      KEYCLOAK_CLIENT_ID: cyctius-server-admin
+      LOGGING_LEVEL_ORG_HIBERNATE_SQL: TRACE
+      LOGGING_LEVEL_ORG_HIBERNATE_TOOL_HBM2DDL: TRACE
+      LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY: TRACE
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    networks:
+      - backend
+
+  keycloak:
+    image: 'quay.io/keycloak/keycloak:24.0.3'
+    container_name: keycloak
+    command: start-dev
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: W5ZR6JY88Q
+      KC_DB: postgres
+      KC_DB_URL: 'jdbc:postgresql://postgres:5432/cyctius_workouts'
+      KC_DB_SCHEMA: cyctius_db_schema
+      KC_DB_USERNAME: cyctius
+      KC_DB_PASSWORD: s9XqLw83vZpE
+      KC_HOSTNAME: cyctius.duckdns.org
+      KC_HTTP_ENABLED: true
+      KC_PROXY: edge
+    expose:
+      - '8080'
+    networks:
+      - backend
+
+  nginx:
+    container_name: nginx
+    restart: unless-stopped
+    image: nginx
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - './nginx/default.conf:/etc/nginx/nginx.conf'
+      - './certbot/conf:/etc/letsencrypt'
+      - './certbot/www:/var/www/certbot'
+    depends_on:
+      - cyctius-server
+      - keycloak
+    networks:
+      - backend
+      -
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - './certbot/conf:/etc/letsencrypt'
+      - './certbot/www:/var/www/certbot'
+    command: certonly --webroot -w /var/www/certbot --force-renewal --email cyctius@gmail.com -d cyctius.mooo.com --agree-tos
+    networks:
+      - backend
+volumes:
+  postgres_data:
+networks:
+  backend:
+    driver: bridge

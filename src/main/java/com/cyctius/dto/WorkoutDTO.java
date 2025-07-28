@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 @Builder
 public class WorkoutDTO {
     private String id;
-    @NotBlank(message = "error.workout.authorId.notblank")
     private String authorId;
     @NotBlank(message = "error.workout.name.notblank")
     private String name;

@@ -9,14 +9,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/user")
+@RequestMapping("/api/v1/user/data")
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-public class UserDatController {
+public class UserDataController {
 
     private final UserDataService userDataService;
 
     @PostMapping("/update")
-    ResponseEntity<CyctiusUserDTO> updateUserData(@RequestBody UpdateUserDataRequestDTO userDTO) {
+    ResponseEntity<CyctiusUserDTO> updateUserData(@RequestBody final UpdateUserDataRequestDTO userDTO) {
         return ResponseEntity.ok(userDataService.updateUserData(userDTO));
     }
 

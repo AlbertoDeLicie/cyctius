@@ -2,7 +2,7 @@ package com.cyctius.service;
 
 import com.cyctius.dto.CyctiusUserDTO;
 
-public interface IntervalUserService {
+public interface InternalUserService {
     CyctiusUserDTO updateUserData(CyctiusUserDTO userDTO);
     CyctiusUserDTO getCurrentUser();
     CyctiusUserDTO findByUsername(String username);

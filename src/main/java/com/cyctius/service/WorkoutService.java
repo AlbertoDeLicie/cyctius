@@ -10,6 +10,7 @@ public interface WorkoutService {
     WorkoutDTO updateWorkout(WorkoutDTO workoutDTO);
     WorkoutDTO getWorkoutById(String id);
     void softDeleteWorkout(String id);
-    List<WorkoutDTO> getAllWorkouts(String authorId);
-    List<WorkoutDTO> getWorkoutsPage(Integer page, Integer size, String authorId);
+    List<WorkoutDTO> getAllWorkouts();
+    List<WorkoutDTO> getWorkoutsPage(Integer page, Integer size);
+    void cleanSoftDeletedWorkouts();
 }

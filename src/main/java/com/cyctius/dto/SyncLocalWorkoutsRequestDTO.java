@@ -14,8 +14,6 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class SyncLocalWorkoutsRequestDTO {
-    @NotBlank(message = "error.sync.authorId.notblank")
-    private String authorId;
     @NotNull(message = "error.sync.local-workouts.notnull")
     private List<WorkoutDTO> localWorkouts;
 }

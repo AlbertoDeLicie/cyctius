@@ -26,4 +26,9 @@ public interface WorkoutRepository extends PagingAndSortingRepository<Workout, S
      * @return a page of workouts
      */
     Page<Workout> findAllByAuthorId(String authorId, Pageable pageable);
+
+    /*
+        * Delete all workouts that are soft deleted.
+     */
+    void deleteAllByIsSoftDeletedTrue();
 }

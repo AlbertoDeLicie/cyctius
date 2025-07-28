@@ -5,22 +5,29 @@ logging:
   level:
     org.hibernate.SQL: DEBUG
     org.hibernate.tool.hbm2ddl: TRACE
+    org.springframework.security: DEBUG
+    org.keycloak.keycloak-admin-client: DEBUG
 
 spring:
   application:
     name: cyctius-server
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://cyctius.mooo.com/realms/Cyctius
   datasource:
-    url: jdbc:postgresql://${DB_HOST:2.56.122.130}:${DB_PORT:5432}/${DB_NAME:cyctius_workouts}
-    password: ${DB_PASSWORD:s9XqLw83vZpE}
-    username: ${DB_USERNAME:cyctius}
+    url: jdbc:postgresql://2.56.122.130:5432/cyctius_workouts
+    password: s9XqLw83vZpE
+    username: cyctius
     driver-class-name: org.postgresql.Driver
   sql:
     init:
       platform: postgres
-      password: ${DB_PASSWORD:s9XqLw83vZpE}
-      username: ${DB_USERNAME:cyctius}
+      password: s9XqLw83vZpE
+      username: cyctius
   liquibase:
-    enabled: ${ENABLE_LIQUIBASE:false}
+    enabled: false
     change-log: classpath:/db/changelog/master-changelog.xml
     liquibase-schema: public
     default-schema: cyctius_db_schema
@@ -36,4 +43,15 @@ spring:
         time_zone: UTC
   jackson:
     time-zone: UTC
+
+keycloak:
+  enabled: true
+  auth-server-url: https://cyctius.mooo.com
+  realm: Cyctius
+  resource: cyctius-server-admin
+  credentials:
+      secret: 0U083xcJR7EONVSQ8kTDu52wzHu9uqeU
+  client-id: cyctius-server-admin
+
+
 

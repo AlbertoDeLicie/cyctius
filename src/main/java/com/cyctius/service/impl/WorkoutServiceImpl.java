@@ -4,6 +4,8 @@ import com.cyctius.dto.WorkoutDTO;
 import com.cyctius.handler.exception.BadRequestException;
 import com.cyctius.handler.exception.NotFoundException;
 import com.cyctius.repository.WorkoutRepository;
+import com.cyctius.service.InternalUserService;
+import com.cyctius.service.UserValidator;
 import com.cyctius.service.WorkoutService;
 import com.cyctius.service.WorkoutTransformer;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +23,10 @@ import java.util.stream.StreamSupport;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class WorkoutServiceImpl implements WorkoutService {
 
+    private final UserValidator userValidator;
     private final WorkoutTransformer workoutTransformer;
     private final WorkoutRepository workoutRepository;
+    private final InternalUserService intervalUserService;
 
     @Override
     public WorkoutDTO insertWorkout(final WorkoutDTO workoutDTO) {
@@ -32,6 +36,8 @@ public class WorkoutServiceImpl implements WorkoutService {
 
         if (Objects.isNull(workoutDTO.getId())) {
             val workout = workoutTransformer.transformToEntity(workoutDTO);
+            workout.setAuthorId(intervalUserService.getCurrentUser().getUserId());
+
             return workoutTransformer.transformToDTO(workoutRepository.save(workout));
         } else {
             return updateWorkout(workoutDTO);
@@ -40,13 +46,20 @@ public class WorkoutServiceImpl implements WorkoutService {
 
     @Override
     public List<WorkoutDTO> insertWorkouts(final List<WorkoutDTO> workoutDTOs) {
-        if (Objects.isNull(workoutDTOs) || workoutDTOs.isEmpty()) {
+        if (Objects.isNull(workoutDTOs)) {
             throw new BadRequestException("workout.error.workouts-cannot-be-null-or-empty");
         }
+
+        if (workoutDTOs.isEmpty()) {
+            return List.of();
+        }
+
+        val currentUser = intervalUserService.getCurrentUser();
 
         val result = workoutRepository.saveAll(
                 workoutDTOs.stream()
                         .map(workoutTransformer::transformToEntity)
+                        .peek(workout -> workout.setAuthorId(currentUser.getUserId()))
                         .toList()
         );
 
@@ -69,9 +82,7 @@ public class WorkoutServiceImpl implements WorkoutService {
                 () -> new NotFoundException("workout.error.workout-not-found")
         );
 
-        if (!Objects.equals(workoutDTO.getAuthorId(), existedWorkout.getAuthorId())) {
-            return workoutDTO;
-        }
+        userValidator.validateAuthor(existedWorkout, "authorId");
 
         if (existedWorkout.getIsSoftDeleted()) {
             throw new BadRequestException("workout.error.workout-not-found");
@@ -101,14 +112,16 @@ public class WorkoutServiceImpl implements WorkoutService {
             throw new NotFoundException("workout.error.workout-id-cannot-be-null");
         }
 
-        val workout = workoutRepository.findById(id)
+        val workoutDTO = workoutRepository.findById(id)
                 .map(workoutTransformer::transformToDTO)
                 .orElseThrow(() -> new NotFoundException("workout.error.workout-not-found"));
 
-        if (workout.getIsSoftDeleted()) {
+        userValidator.validateAuthor(workoutDTO, "authorId");
+
+        if (workoutDTO.getIsSoftDeleted()) {
             throw new BadRequestException("workout.error.workout-not-found");
         } else {
-            return workout;
+            return workoutDTO;
         }
     }
 
@@ -122,16 +135,16 @@ public class WorkoutServiceImpl implements WorkoutService {
                 () -> new NotFoundException("workout.error.workout-not-found")
         );
 
+        userValidator.validateAuthor(workout, "authorId");
+
         workout.setIsSoftDeleted(true);
 
         workoutRepository.save(workout);
     }
 
     @Override
-    public List<WorkoutDTO> getAllWorkouts(final String authorId) {
-        if (Objects.isNull(authorId)) {
-            throw new BadRequestException("workout.error.author-id-cannot-be-null");
-        }
+    public List<WorkoutDTO> getAllWorkouts() {
+        val authorId = intervalUserService.getCurrentUser().getUserId();
 
         return workoutRepository.findAllByAuthorId(authorId).stream()
                 .map(workoutTransformer::transformToDTO)
@@ -140,10 +153,17 @@ public class WorkoutServiceImpl implements WorkoutService {
     }
 
     @Override
-    public List<WorkoutDTO> getWorkoutsPage(final Integer page, final Integer size, final String authorId) {
+    public List<WorkoutDTO> getWorkoutsPage(final Integer page, final Integer size) {
+        val authorId = intervalUserService.getCurrentUser().getUserId();
+
         return workoutRepository.findAllByAuthorId(authorId, PageRequest.of(page, size)).stream()
                 .map(workoutTransformer::transformToDTO)
                 .filter(workout -> !workout.getIsSoftDeleted())
                 .toList();
+    }
+
+    @Override
+    public void cleanSoftDeletedWorkouts() {
+        workoutRepository.deleteAllByIsSoftDeletedTrue();
     }
 }

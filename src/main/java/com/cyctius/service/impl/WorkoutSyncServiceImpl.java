@@ -27,7 +27,7 @@ public class WorkoutSyncServiceImpl implements WorkoutSyncService {
             throw new BadRequestException("sync.error.sync-request-cannot-be-null");
         }
 
-        val serverSideWorkoutDTOs = workoutService.getAllWorkouts(syncLocalWorkoutsRequestDTO.getAuthorId());
+        val serverSideWorkoutDTOs = workoutService.getAllWorkouts();
 
         return workoutService.insertWorkouts(mergeWorkouts(syncLocalWorkoutsRequestDTO.getLocalWorkouts(), serverSideWorkoutDTOs))
                 .stream()
