@@ -9,6 +9,7 @@ import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -29,6 +30,8 @@ public class WorkoutSyncServiceImpl implements WorkoutSyncService {
 
         val serverSideWorkoutDTOs = workoutService.getAllWorkouts();
 
+        validateDuplicateIds(syncLocalWorkoutsRequestDTO);
+
         return workoutService.insertWorkouts(mergeWorkouts(syncLocalWorkoutsRequestDTO.getLocalWorkouts(), serverSideWorkoutDTOs))
                 .stream()
                 .filter(w -> !w.getIsSoftDeleted())
@@ -44,7 +47,19 @@ public class WorkoutSyncServiceImpl implements WorkoutSyncService {
         return workoutService.insertWorkout(workoutDTO);
     }
 
-    private List<WorkoutDTO> mergeWorkouts(final List<WorkoutDTO> local, final List<WorkoutDTO> server) {
+    private static void validateDuplicateIds(final SyncLocalWorkoutsRequestDTO syncLocalWorkoutsRequestDTO) {
+        val ids = syncLocalWorkoutsRequestDTO.getLocalWorkouts()
+                .stream()
+                .map(WorkoutDTO::getId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+
+        if (ids.size() != syncLocalWorkoutsRequestDTO.getLocalWorkouts().size()) {
+            throw new BadRequestException("sync.error.sync-request-contains-duplicate-workout-ids");
+        }
+    }
+
+    public List<WorkoutDTO> mergeWorkouts(final List<WorkoutDTO> local, final List<WorkoutDTO> server) {
         if (local.isEmpty()) {
             return server;
         }
@@ -53,13 +68,24 @@ public class WorkoutSyncServiceImpl implements WorkoutSyncService {
             return local;
         }
 
-        return Stream.concat(local.stream(), server.stream())
+        val nullIdWorkouts = local.stream()
+                .filter(workout -> Objects.isNull(workout.getId()))
+                .toList();
+
+        val localWithId = local.stream()
+                .filter(workout -> Objects.nonNull(workout.getId()))
+                .toList();
+
+        val stream = Stream.concat(localWithId.stream(), server.stream())
                 .collect(Collectors.toMap(
                         WorkoutDTO::getId,
                         Function.identity(),
                         (w1, w2) -> w1.getUpdatedAt().isAfter(w2.getUpdatedAt()) ? w1 : w2
                 ))
-                .values().stream()
+                .values().stream();
+
+        return Stream.concat(stream, nullIdWorkouts.stream())
+                .sorted(Comparator.comparing(WorkoutDTO::getName))
                 .toList();
     }
 }
