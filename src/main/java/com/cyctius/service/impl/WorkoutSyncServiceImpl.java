@@ -3,7 +3,9 @@ package com.cyctius.service.impl;
 import com.cyctius.dto.SyncLocalWorkoutsRequestDTO;
 import com.cyctius.dto.WorkoutDTO;
 import com.cyctius.handler.exception.BadRequestException;
+import com.cyctius.service.WorkoutService;
 import com.cyctius.service.WorkoutSyncService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +22,16 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class WorkoutSyncServiceImpl implements WorkoutSyncService {
 
-    private final WorkoutServiceImpl workoutService;
+    private final WorkoutService workoutService;
 
     @Override
     public List<WorkoutDTO> syncWorkouts(final SyncLocalWorkoutsRequestDTO syncLocalWorkoutsRequestDTO) {
         if (Objects.isNull(syncLocalWorkoutsRequestDTO)) {
             throw new BadRequestException("sync.error.sync-request-cannot-be-null");
+        }
+
+        if (Objects.isNull(syncLocalWorkoutsRequestDTO.getLocalWorkouts())) {
+            throw new BadRequestException("sync.error.local-workouts-cannot-be-null");
         }
 
         val serverSideWorkoutDTOs = workoutService.getAllWorkouts();
@@ -54,17 +60,23 @@ public class WorkoutSyncServiceImpl implements WorkoutSyncService {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
 
-        if (ids.size() != syncLocalWorkoutsRequestDTO.getLocalWorkouts().size()) {
+        val idsWithoutNulls = syncLocalWorkoutsRequestDTO.getLocalWorkouts()
+                .stream()
+                .map(WorkoutDTO::getId)
+                .filter(Objects::nonNull)
+                .toList();
+
+        if (ids.size() != idsWithoutNulls.size()) {
             throw new BadRequestException("sync.error.sync-request-contains-duplicate-workout-ids");
         }
     }
 
     public List<WorkoutDTO> mergeWorkouts(final List<WorkoutDTO> local, final List<WorkoutDTO> server) {
-        if (local.isEmpty()) {
-            return server;
+        if (Objects.isNull(local) || local.isEmpty()) {
+            return Objects.isNull(server) ? List.of() : server;
         }
 
-        if (server.isEmpty()) {
+        if (Objects.isNull(server) || server.isEmpty()) {
             return local;
         }
 
@@ -80,7 +92,15 @@ public class WorkoutSyncServiceImpl implements WorkoutSyncService {
                 .collect(Collectors.toMap(
                         WorkoutDTO::getId,
                         Function.identity(),
-                        (w1, w2) -> w1.getUpdatedAt().isAfter(w2.getUpdatedAt()) ? w1 : w2
+                        (w1, w2) -> {
+                            if (Objects.isNull(w1.getUpdatedAt())) {
+                                return w2;
+                            }
+                            if (Objects.isNull(w2.getUpdatedAt())) {
+                                return w1;
+                            }
+                            return w1.getUpdatedAt().isAfter(w2.getUpdatedAt()) ? w1 : w2;
+                        }
                 ))
                 .values().stream();
 

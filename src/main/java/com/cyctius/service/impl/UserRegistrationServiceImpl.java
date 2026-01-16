@@ -2,10 +2,8 @@ package com.cyctius.service.impl;
 
 import com.cyctius.dto.CyctiusUserDTO;
 import com.cyctius.dto.UserRegistrationRequestDTO;
-import com.cyctius.entity.CyctiusUser;
 import com.cyctius.handler.exception.BadRequestException;
 import com.cyctius.repository.UserRepository;
-import com.cyctius.service.InternalUserService;
 import com.cyctius.service.UserRegistrationService;
 import com.cyctius.service.UserTransformer;
 import jakarta.validation.ConstraintViolationException;

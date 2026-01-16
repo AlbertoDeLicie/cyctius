@@ -100,7 +100,7 @@ public class WorkoutServiceImpl implements WorkoutService {
 
         existedWorkout.setName(workoutDTO.getName());
         existedWorkout.setDescription(workoutDTO.getDescription());
-        existedWorkout.setIntervalsJson(workoutDTO.getIntervalsJson());
+        existedWorkout.setIntervals(workoutDTO.getIntervals());
         existedWorkout.setUpdatedAt(workoutDTO.getUpdatedAt());
 
         return workoutTransformer.transformToDTO(workoutRepository.save(existedWorkout));

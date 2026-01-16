@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class SharedWorkoutDTO {
+    private String id;
+    private String workoutId;
     private String name;
     private String description;
-    private String intervalsJson;
 }

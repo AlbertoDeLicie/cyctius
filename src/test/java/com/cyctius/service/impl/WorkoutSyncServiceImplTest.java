@@ -1,7 +1,12 @@
-package com.cyctius.service;
+package com.cyctius.service.impl;
 
+import com.cyctius.core.model.intervals.Interval;
+import com.cyctius.core.model.intervals.SingleInterval;
+import com.cyctius.dto.SyncLocalWorkoutsRequestDTO;
 import com.cyctius.dto.WorkoutDTO;
-import com.cyctius.service.impl.WorkoutSyncServiceImpl;
+import com.cyctius.handler.exception.BadRequestException;
+import com.cyctius.service.WorkoutService;
+
 import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,12 +21,16 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class WorkoutSyncServiceImplTest {
     @Mock
-    private WorkoutSyncServiceImpl workoutService;
+    private WorkoutService workoutService;
 
     @InjectMocks
     private WorkoutSyncServiceImpl workoutSyncService;
@@ -53,16 +62,16 @@ public class WorkoutSyncServiceImplTest {
         int randomIndex = (int) (Math.random() * availableWorkoutNames.size());
         val randomId = withId ? UUID.randomUUID().toString() : null;
 
-        return new WorkoutDTO(
-                randomId,
-                "authorId",
-                availableWorkoutNames.get(randomIndex),
-                availableWorkoutDescriptions.get(randomIndex),
-                isSoftDeleted,
-                "[]", // intervalsJson
-                LocalDateTime.now(),  // createdAt
-                LocalDateTime.now()   // updatedAt
-        );
+        return WorkoutDTO.builder()
+                .id(randomId)
+                .authorId("authorId")
+                .name(availableWorkoutNames.get(randomIndex))
+                .description(availableWorkoutDescriptions.get(randomIndex))
+                .isSoftDeleted(isSoftDeleted)
+                .intervals(java.util.Collections.emptyList())
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
     }
 
     WorkoutDTO createRandomWorkoutDTO(
@@ -72,18 +81,16 @@ public class WorkoutSyncServiceImplTest {
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ) {
-        int randomIndex = (int) (Math.random() * availableWorkoutNames.size());
-
-        return new WorkoutDTO(
-                id,
-                "authorId",
-                name,
-                availableWorkoutDescriptions.get(randomIndex),
-                isSoftDeleted,
-                "[]", // intervalsJson,
-                createdAt,  // createdAt
-                updatedAt   // updatedAt
-        );
+        return WorkoutDTO.builder()
+                .id(id)
+                .authorId("authorId")
+                .name(name)
+                .description("description")
+                .isSoftDeleted(isSoftDeleted)
+                .intervals(java.util.Collections.emptyList())
+                .createdAt(createdAt)
+                .updatedAt(updatedAt)
+                .build();
     }
 
     // Синхронизация тренировок, когда локальные и серверные пусты, без soft-deleted тренировок.
@@ -98,6 +105,18 @@ public class WorkoutSyncServiceImplTest {
 
         // Then
         assertEquals(0, result.size());
+    }
+
+    @Test
+    void testMergeWorkouts_nullInputs() {
+        assertEquals(0, workoutSyncService.mergeWorkouts(null, null).size());
+        assertEquals(0, workoutSyncService.mergeWorkouts(List.of(), null).size());
+        
+        val server = List.of(createRandomWorkoutDTO(true, false));
+        assertEquals(server, workoutSyncService.mergeWorkouts(null, server));
+        
+        val local = List.of(createRandomWorkoutDTO(false, false));
+        assertEquals(local, workoutSyncService.mergeWorkouts(local, null));
     }
 
     // Синхронизация локальных тренировок, когда сервер пуст, без soft-deleted тренировок.
@@ -218,6 +237,25 @@ public class WorkoutSyncServiceImplTest {
     }
 
     @Test
+    void testMergeWorkouts_shouldHandleNullUpdatedAt() {
+        val id = "1";
+        val workoutWithNullUpdate = createRandomWorkoutDTO(id, "Null Update", false, LocalDateTime.now(), null);
+        val workoutWithUpdate = createRandomWorkoutDTO(id, "With Update", false, LocalDateTime.now(), LocalDateTime.now());
+
+        // Null first
+        val result1 = workoutSyncService.mergeWorkouts(List.of(workoutWithNullUpdate), List.of(workoutWithUpdate));
+        assertEquals("With Update", result1.get(0).getName());
+
+        // Null second
+        val result2 = workoutSyncService.mergeWorkouts(List.of(workoutWithUpdate), List.of(workoutWithNullUpdate));
+        assertEquals("With Update", result2.get(0).getName());
+        
+        // Both null
+        val result3 = workoutSyncService.mergeWorkouts(List.of(workoutWithNullUpdate), List.of(workoutWithNullUpdate));
+        assertEquals("Null Update", result3.get(0).getName());
+    }
+
+    @Test
     void testMergeWorkout_localHaveDeletedWorkouts() {
 
         val nowMinusOneDay = LocalDateTime.now().minusDays(1);
@@ -268,5 +306,120 @@ public class WorkoutSyncServiceImplTest {
         assertEquals(2, result.size());
         assertTrue(result.contains(workout1));
         assertTrue(result.contains(workout2));
+    }
+
+    @Test
+    void testSyncWorkouts_nullRequest_shouldThrowException() {
+        assertThrows(BadRequestException.class, () -> workoutSyncService.syncWorkouts(null));
+    }
+
+    @Test
+    void testSyncWorkouts_nullLocalWorkouts_shouldThrowException() {
+        val request = new SyncLocalWorkoutsRequestDTO();
+        assertThrows(BadRequestException.class, () -> workoutSyncService.syncWorkouts(request));
+    }
+
+    @Test
+    void testSyncWorkouts_duplicateIds_shouldThrowException() {
+        val id = UUID.randomUUID().toString();
+        val workout1 = createRandomWorkoutDTO(id, "W1", false, LocalDateTime.now(), LocalDateTime.now());
+        val workout2 = createRandomWorkoutDTO(id, "W2", false, LocalDateTime.now(), LocalDateTime.now());
+
+        val request = SyncLocalWorkoutsRequestDTO.builder()
+                .localWorkouts(List.of(workout1, workout2))
+                .build();
+
+        assertThrows(BadRequestException.class, () -> workoutSyncService.syncWorkouts(request));
+    }
+
+    @Test
+    void testSyncWorkouts_success() {
+        // Given
+        val localWorkout = createRandomWorkoutDTO(null, "Local", false, LocalDateTime.now(), LocalDateTime.now());
+        val serverWorkout = createRandomWorkoutDTO(UUID.randomUUID().toString(), "Server", false, LocalDateTime.now(), LocalDateTime.now());
+
+        val request = SyncLocalWorkoutsRequestDTO.builder()
+                .localWorkouts(List.of(localWorkout))
+                .build();
+
+        when(workoutService.getAllWorkouts()).thenReturn(List.of(serverWorkout));
+        when(workoutService.insertWorkouts(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // When
+        val result = workoutSyncService.syncWorkouts(request);
+
+        // Then
+        assertEquals(2, result.size());
+        verify(workoutService).getAllWorkouts();
+        verify(workoutService).insertWorkouts(anyList());
+    }
+
+    @Test
+    void testSyncWorkout_nullWorkout_shouldThrowException() {
+        assertThrows(BadRequestException.class, () -> workoutSyncService.syncWorkout(null));
+    }
+
+    @Test
+    void testSyncWorkout_success() {
+        // Given
+        val workoutDTO = createRandomWorkoutDTO(true, false);
+        when(workoutService.insertWorkout(workoutDTO)).thenReturn(workoutDTO);
+
+        // When
+        val result = workoutSyncService.syncWorkout(workoutDTO);
+
+        // Then
+        assertEquals(workoutDTO, result);
+        verify(workoutService).insertWorkout(workoutDTO);
+    }
+
+    @Test
+    void testMergeWorkouts_shouldUpdateIntervalsWhenLocalIsNewer() {
+        val id = UUID.randomUUID().toString();
+        val serverIntervals = List.<Interval>of(new SingleInterval(100, 90, true, 600));
+        val localIntervals = List.<Interval>of(new SingleInterval(150, 95, true, 300));
+
+        val server = createRandomWorkoutDTO(id, "Workout", false, LocalDateTime.now().minusDays(1), LocalDateTime.now().minusDays(1));
+        server.setIntervals(serverIntervals);
+
+        val local = createRandomWorkoutDTO(id, "Workout", false, LocalDateTime.now().minusDays(1), LocalDateTime.now());
+        local.setIntervals(localIntervals);
+
+        val result = workoutSyncService.mergeWorkouts(List.of(local), List.of(server));
+
+        assertEquals(1, result.size());
+        assertEquals(localIntervals, result.get(0).getIntervals());
+        assertEquals(150, ((SingleInterval) result.get(0).getIntervals().get(0)).getTargetIntensity());
+    }
+
+    @Test
+    void testMergeWorkouts_shouldPreserveServerIntervalsWhenServerIsNewer() {
+        val id = UUID.randomUUID().toString();
+        val serverIntervals = List.<Interval>of(new SingleInterval(100, 90, true, 600));
+        val localIntervals = List.<Interval>of(new SingleInterval(150, 95, true, 300));
+
+        val server = createRandomWorkoutDTO(id, "Workout", false, LocalDateTime.now().minusDays(1), LocalDateTime.now());
+        server.setIntervals(serverIntervals);
+
+        val local = createRandomWorkoutDTO(id, "Workout", false, LocalDateTime.now().minusDays(1), LocalDateTime.now().minusHours(1));
+        local.setIntervals(localIntervals);
+
+        val result = workoutSyncService.mergeWorkouts(List.of(local), List.of(server));
+
+        assertEquals(1, result.size());
+        assertEquals(serverIntervals, result.get(0).getIntervals());
+        assertEquals(100, ((SingleInterval) result.get(0).getIntervals().get(0)).getTargetIntensity());
+    }
+
+    @Test
+    void testMergeWorkouts_shouldPreserveIntervalsForNewWorkouts() {
+        val intervals = List.<Interval>of(new SingleInterval(200, 100, true, 120));
+        val newWorkout = createRandomWorkoutDTO(null, "New Workout", false, LocalDateTime.now(), LocalDateTime.now());
+        newWorkout.setIntervals(intervals);
+
+        val result = workoutSyncService.mergeWorkouts(List.of(newWorkout), List.of());
+
+        assertEquals(1, result.size());
+        assertEquals(intervals, result.get(0).getIntervals());
     }
 }

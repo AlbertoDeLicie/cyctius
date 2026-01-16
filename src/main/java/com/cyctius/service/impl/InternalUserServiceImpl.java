@@ -1,11 +1,9 @@
 package com.cyctius.service.impl;
 
 import com.cyctius.dto.CyctiusUserDTO;
-import com.cyctius.dto.WorkoutDTO;
 import com.cyctius.repository.UserRepository;
 import com.cyctius.service.InternalUserService;
 import com.cyctius.service.UserTransformer;
-import com.cyctius.service.UserValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.apache.commons.lang3.StringUtils;

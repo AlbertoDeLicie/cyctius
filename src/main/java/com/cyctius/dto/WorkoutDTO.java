@@ -8,6 +8,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
+import com.cyctius.core.model.intervals.Interval;
+import com.cyctius.enums.WorkoutVisibility;
 
 @Data
 @AllArgsConstructor
@@ -19,9 +23,11 @@ public class WorkoutDTO {
     @NotBlank(message = "error.workout.name.notblank")
     private String name;
     private String description;
+    private WorkoutVisibility visibility;
     private Boolean isSoftDeleted;
-    @NotNull(message = "error.workout.intervalsJson.notblank")
-    private String intervalsJson;
+    @NotNull(message = "error.workout.intervals.notnull")
+    private List<Interval> intervals;
+    private WorkoutMetadataDTO metadata;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
