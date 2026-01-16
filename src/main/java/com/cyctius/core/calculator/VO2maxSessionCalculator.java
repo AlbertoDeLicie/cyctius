@@ -34,7 +34,7 @@ import org.springframework.stereotype.Component;
  *
  * 4. Интерпретация Score (1.0 - 10.0):
  *    - Score определяет целевой уровень истощения W' к концу последнего интервала:
- *      Target_W'bal = W'max * (1 - (Score - 1) / 9.0).
+ *      Target_W'bal = W'max * ((Score - 1) / 10.0).
  *    - Score 10.0 соответствует полному истощению (W'bal ≈ 0).
  *    - Score 1.0 соответствует отсутствию истощения (W'bal ≈ W'max).
  *
@@ -122,11 +122,11 @@ public class VO2maxSessionCalculator implements SessionCalculator<AthleteVO2MaxP
         int nMin = Math.max(2, (int) (nIdeal * 0.5));
         int nMax = Math.max(nMin + 1, (int) (nIdeal * 2.0));
 
-        return IntStream.rangeClosed(nMin, nMax + 1).boxed().collect(Collectors.toList());
+        return IntStream.rangeClosed(nMin, nMax).boxed().collect(Collectors.toList());
     }
 
     private List<Integer> getWorkDurationRange(Config config, int totalDurationSec) {
-        return IntStream.rangeClosed(config.tMin, config.tMax + 1).boxed().collect(Collectors.toList());
+        return IntStream.rangeClosed(config.tMin, config.tMax).boxed().collect(Collectors.toList());
     }
 
     private Boolean isTotalWorkExceed(int totalDurationSec, int n, int tWork) {
@@ -162,11 +162,11 @@ public class VO2maxSessionCalculator implements SessionCalculator<AthleteVO2MaxP
     private Config getConfig(VO2maxSessionParameters.VO2maxIntervalType type) {
         switch (type) {
             case SHORT:
-                return new Config(30, 60, 40, 1.15, 1.25, 1.20, 5);
+                return new Config(30, 60, 40, 1.01, 1.25, 1.20, 5);
             case CLASSIC:
-                return new Config(120, 300, 180, 1.08, 1.15, 1.12, 10);
+                return new Config(120, 300, 180, 1.01, 1.15, 1.12, 10);
             case LONG:
-                return new Config(300, 600, 480, 1.05, 1.08, 1.06, 20);
+                return new Config(300, 600, 480, 1.01, 1.08, 1.06, 20);
             default:
                 throw new IllegalArgumentException("Unknown interval type");
         }

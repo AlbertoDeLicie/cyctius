@@ -147,6 +147,20 @@ class VO2maxSessionCalculatorTest {
     }
 
     @Test
+    @DisplayName("Very short interval but with long interval type")
+    void calculate_VeryShortInterval_LongIntervalType_Success() {
+        VO2maxSessionParameters params = VO2maxSessionParameters.builder()
+                .score(8.0)
+                .durationMinutes(10)
+                .intervalType(VO2maxSessionParameters.VO2maxIntervalType.LONG)
+                .build();
+
+        VO2maxSession session = calculator.calculate(defaultAthlete, params);
+
+        assertNull(session);
+    }
+
+    @Test
     @DisplayName("High FTP Athlete (400W)")
     void calculate_HighFtpAthlete_Success() {
         AthleteVO2MaxProfile proAthlete = AthleteVO2MaxProfile.builder()

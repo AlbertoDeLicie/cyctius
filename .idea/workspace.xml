@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="e3782f82-d91a-4d27-9e44-40d018d065d7" name="Changes" comment="тесты + изменен мердж тренировок">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/cyctius/enums/IntervalType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/cyctius/enums/PowerZone.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/cyctius/model/WorkoutModel.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/cyctius/model/intervals/Interval.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/cyctius/model/intervals/RampInterval.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/cyctius/model/intervals/RepeatInterval.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/cyctius/model/intervals/SingleInterval.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/resources/mockito-extensions/org.mockito.plugins.MockMaker" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cyctius/controller/WorkoutSyncController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cyctius/controller/WorkoutSyncController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cyctius/dto/WorkoutDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cyctius/dto/WorkoutDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cyctius/entity/Workout.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cyctius/entity/Workout.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cyctius/service/WorkoutService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cyctius/service/WorkoutService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cyctius/service/impl/WorkoutSyncServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cyctius/service/impl/WorkoutSyncServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/cyctius/service/impl/WorkoutTransformerImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/cyctius/service/impl/WorkoutTransformerImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/cyctius/service/WorkoutSyncServiceImplTest.java" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Dockerfile" />
+        <option value="Kotlin Interface" />
+        <option value="Kotlin Class" />
+        <option value="Interface" />
+        <option value="Kotlin Enum" />
+        <option value="Enum" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;AlbertoDeLicie&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/AlbertoDeLicie/cyctius.git&quot;,
+    &quot;accountId&quot;: &quot;d40d3a5d-74fb-447f-b567-bc19cdbe377b&quot;
+  }
+}</component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="jar://$MAVEN_REPOSITORY$/org/springframework/data/spring-data-commons/3.2.4/spring-data-commons-3.2.4-sources.jar!/org/springframework/data/repository/CrudRepository.java" root0="SKIP_INSPECTION" />
+    <setting file="jar://$MAVEN_REPOSITORY$/org/springframework/spring-web/6.1.5/spring-web-6.1.5.jar!/org/springframework/web/method/support/InvocableHandlerMethod.class" root0="SKIP_INSPECTION" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 2
+}</component>
+  <component name="ProjectId" id="2zavZZeFm8GFxE7vvRiA1TVX9bt" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.CyctiusServer.executor": "Debug",
+    "JUnit.TssCalculationServiceImplTest.executor": "Run",
+    "JUnit.WorkoutPowerUtilsDistributionTest.executor": "Run",
+    "JUnit.WorkoutPowerUtilsImplTest.executor": "Run",
+    "JUnit.WorkoutSyncServiceImplTest.executor": "Run",
+    "Maven.CyctiusServer [clean].executor": "Run",
+    "Maven.CyctiusServer [compile].executor": "Run",
+    "Maven.CyctiusServer [install].executor": "Run",
+    "Maven.CyctiusServer [package].executor": "Run",
+    "Maven.CyctiusServer [verify].executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "master",
+    "settings.editor.selected.configurable": "com.codeium.AppSettingsConfigurable"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="com.cyctius.service.impl" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\shyte\IdeaProjects\cyctius\src\test" />
+      <recent name="C:\Users\shyte\IdeaProjects\cyctius" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.cyctius.dto" />
+      <recent name="com.cyctius.handler.exception" />
+    </key>
+  </component>
+  <component name="RunManager" selected="JUnit.WorkoutPowerUtilsDistributionTest">
+    <configuration name="CyctiusServer" type="Application" factoryName="Application">
+      <option name="ALTERNATIVE_JRE_PATH" value="$PROJECT_DIR$/../../../../Program Files/Java/jdk-24" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="MAIN_CLASS_NAME" value="com.cyctius.CyctiusServerApplication" />
+      <module name="CyctiusServer" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TssCalculationServiceImplTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="CyctiusServer" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.cyctius.service.impl.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.cyctius.service.impl" />
+      <option name="MAIN_CLASS_NAME" value="com.cyctius.service.impl.TssCalculationServiceImplTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="WorkoutPowerUtilsDistributionTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="CyctiusServer" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.cyctius.service.impl.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.cyctius.service.impl" />
+      <option name="MAIN_CLASS_NAME" value="com.cyctius.service.impl.WorkoutPowerUtilsDistributionTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="WorkoutPowerUtilsImplTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="CyctiusServer" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.cyctius.service.impl.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.cyctius.service.impl" />
+      <option name="MAIN_CLASS_NAME" value="com.cyctius.service.impl.WorkoutPowerUtilsImplTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="WorkoutSyncServiceImplTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="CyctiusServer" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.cyctius.service.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="ALTERNATIVE_JRE_PATH" value="$PROJECT_DIR$/../../../../Program Files/Java/jdk-22" />
+      <option name="PACKAGE_NAME" value="com.cyctius.service" />
+      <option name="MAIN_CLASS_NAME" value="com.cyctius.service.WorkoutSyncServiceImplTest" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.CyctiusServer" />
+      <item itemvalue="JUnit.WorkoutPowerUtilsDistributionTest" />
+      <item itemvalue="JUnit.WorkoutPowerUtilsImplTest" />
+      <item itemvalue="JUnit.TssCalculationServiceImplTest" />
+      <item itemvalue="JUnit.WorkoutSyncServiceImplTest" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.WorkoutPowerUtilsDistributionTest" />
+        <item itemvalue="JUnit.WorkoutPowerUtilsImplTest" />
+        <item itemvalue="JUnit.TssCalculationServiceImplTest" />
+        <item itemvalue="JUnit.WorkoutSyncServiceImplTest" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="e3782f82-d91a-4d27-9e44-40d018d065d7" name="Changes" comment="" />
+      <created>1751982054219</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1751982054219</updated>
+    </task>
+    <task id="LOCAL-00001" summary="Реализовано все для синхронизации">
+      <option name="closed" value="true" />
+      <created>1752188187471</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1752188187471</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Workout sharing implemented">
+      <option name="closed" value="true" />
+      <created>1752231266324</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1752231266324</updated>
+    </task>
+    <task id="LOCAL-00003" summary="auto clean up of shared workouts">
+      <option name="closed" value="true" />
+      <created>1752856838501</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1752856838501</updated>
+    </task>
+    <task id="LOCAL-00004" summary="git igore">
+      <option name="closed" value="true" />
+      <created>1753732390714</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1753732390714</updated>
+    </task>
+    <task id="LOCAL-00005" summary="123">
+      <option name="closed" value="true" />
+      <created>1753732529257</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1753732529257</updated>
+    </task>
+    <task id="LOCAL-00006" summary="тесты + изменен мердж тренировок">
+      <option name="closed" value="true" />
+      <created>1754141563938</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1754141563938</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
+    <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Реализовано все для синхронизации" />
+    <MESSAGE value="Workout sharing implemented" />
+    <MESSAGE value="auto clean up of shared workouts" />
+    <MESSAGE value="git igore" />
+    <MESSAGE value="123" />
+    <MESSAGE value="тесты + изменен мердж тренировок" />
+    <option name="LAST_COMMIT_MESSAGE" value="тесты + изменен мердж тренировок" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>jar://$MAVEN_REPOSITORY$/org/hibernate/orm/hibernate-core/6.4.4.Final/hibernate-core-6.4.4.Final.jar!/org/hibernate/id/IdentifierGeneratorHelper.class</url>
+          <line>131</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/cyctius/controller/UserDataController.java</url>
+          <line>24</line>
+          <option name="timeStamp" value="17" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/cyctius/service/impl/UserRegistrationServiceImpl.java</url>
+          <line>40</line>
+          <option name="timeStamp" value="18" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/cyctius/controller/UserRegistrationController.java</url>
+          <line>23</line>
+          <option name="timeStamp" value="19" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/test/java/com/cyctius/service/impl/WorkoutPowerUtilsImplTest.java</url>
+          <line>88</line>
+          <option name="timeStamp" value="24" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/cyctius/service/impl/WorkoutPowerUtilsImpl.java</url>
+          <line>74</line>
+          <option name="timeStamp" value="26" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/cyctius/service/impl/WorkoutPowerUtilsImpl.java</url>
+          <line>80</line>
+          <option name="timeStamp" value="27" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>
